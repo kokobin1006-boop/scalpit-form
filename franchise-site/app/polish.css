@@ -1,0 +1,71 @@
+/* SCALPIT v42 polish layer — loaded last. Typography first, then conversion layers. */
+body,.f-site,.f-site button,.f-site input,.f-site textarea{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
+
+/* ── Hero: say what this is, make the primary action the inquiry ───────── */
+.f-site.f-refined .f-hero-copy>.f-kicker{font-size:.8125rem;font-weight:500;letter-spacing:.14em;color:#f0d9bf;text-shadow:0 1px 14px #1a0509b0}
+.f-site.f-refined .f-kicker i{font-style:normal;opacity:.55;margin:0 .35em}
+.f-site.f-refined .f-hero-actions a:first-child{font-weight:600;font-size:.9375rem;min-height:56px}
+.f-site.f-refined .f-hero-actions a:last-child{font-size:.9375rem}
+@media(max-width:760px){
+  .f-site.f-editorial.f-refined .f-hero-edition{display:block;max-width:100%;padding-top:26px}
+  .f-site.f-editorial.f-refined .f-hero-edition span{font-size:.6875rem;letter-spacing:.06em}
+  .f-site.f-editorial.f-refined .f-hero-edition b{display:none}
+  .f-site.f-refined .f-hero-copy>.f-kicker{font-size:.75rem;letter-spacing:.06em;line-height:1.6}
+  .f-site.f-refined .f-hero-actions{flex-wrap:wrap}
+}
+
+/* ── Glance: answers first, for people who skim ────────────────────────── */
+.sc-glance{padding:88px var(--gutter);background:var(--paper)}
+.sc-glance-head{display:grid;grid-template-columns:1.15fr .85fr;gap:0 8vw;margin-bottom:44px;align-items:end}
+.sc-glance-head>span{grid-column:1/-1;color:var(--wine);font-size:.75rem;font-weight:600;letter-spacing:.08em;margin-bottom:18px}
+.sc-glance-head h2{font-size:clamp(2rem,3.6vw,3.4rem);line-height:1.22;color:var(--ink)}
+.sc-glance-head p{color:var(--muted);font-size:.9375rem}
+.sc-glance-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #bfae9f;border-left:1px solid #d9c9bf}
+.sc-glance-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:30px 28px 26px;border-right:1px solid #d9c9bf;border-bottom:1px solid #d9c9bf;background:transparent;transition:background .35s var(--sc-ease,ease)}
+.sc-glance-card:hover,.sc-glance-card:focus-visible{background:#fff}
+.sc-glance-card>span{font:500 .75rem/1 "Montserrat","Pretendard Variable",sans-serif;color:#a08a7c;letter-spacing:.12em}
+.sc-glance-card h3{font-size:.9375rem;font-weight:600;color:var(--wine);letter-spacing:-.02em}
+.sc-glance-card strong{font-size:1.28rem;line-height:1.5;font-weight:600;letter-spacing:-.045em;color:var(--ink);text-wrap:balance}
+.sc-glance-card p{font-size:.875rem;line-height:1.75;color:var(--muted);flex:1}
+.sc-glance-card b{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:.8125rem;font-weight:600;color:var(--wine)}
+.sc-glance-card b svg{width:16px;height:16px;transition:transform .3s}
+.sc-glance-card:hover b svg{transform:translateX(4px)}
+@media(max-width:1000px){.sc-glance-grid{grid-template-columns:repeat(2,1fr)}.sc-glance-head{grid-template-columns:1fr;gap:18px}}
+@media(max-width:640px){
+  .sc-glance{padding:64px 6vw}
+  .sc-glance-grid{grid-template-columns:1fr}
+  .sc-glance-card{padding:24px 20px 22px}
+  .sc-glance-card strong{font-size:1.15rem}
+}
+
+/* ── Contract order: the trust section prospects look for before they call ─ */
+.sc-contract{padding:88px var(--gutter);background:#f1e8df;border-top:1px solid var(--line);display:grid;grid-template-columns:.9fr 1.4fr;gap:6vw}
+.sc-contract-head>span{display:block;color:var(--wine);font-size:.75rem;font-weight:600;letter-spacing:.08em;margin-bottom:18px}
+.sc-contract-head h2{font-size:clamp(1.9rem,3.2vw,3rem);line-height:1.25;color:var(--ink)}
+.sc-contract-head p{margin-top:20px;color:var(--muted);font-size:.9375rem}
+.sc-contract-steps{list-style:none;margin:0;padding:0;border-top:1px solid #b8a698}
+.sc-contract-steps li{display:grid;grid-template-columns:56px 1fr;gap:6px 14px;padding:22px 0;border-bottom:1px solid #d3c2b4}
+.sc-contract-steps b{font:500 1.5rem/1.2 Georgia,"Times New Roman",serif;color:var(--wine)}
+.sc-contract-steps strong{display:block;font-size:1.0625rem;font-weight:600;color:var(--ink);letter-spacing:-.03em}
+.sc-contract-steps p{font-size:.875rem;line-height:1.8;color:#6b5d56;margin-top:4px}
+@media(max-width:900px){.sc-contract{grid-template-columns:1fr;gap:30px;padding:64px 6vw}}
+
+/* ── Form: qualify the lead without adding friction ────────────────────── */
+.sc-chips{border:0;padding:0;margin:2px 0 22px;min-width:0}
+.sc-chips legend{font-size:.875rem;margin-bottom:8px;padding:0;color:inherit}
+.sc-chips legend small{color:var(--muted);font-size:.75rem;margin-left:6px}
+.sc-chips>div{display:flex;flex-wrap:wrap;gap:8px}
+.sc-chips button{min-height:44px;padding:0 14px;border:1px solid #d3c3b6;background:#fffdf9;color:var(--ink);font-size:.875rem;transition:background .2s,color .2s,border-color .2s}
+.sc-chips button:hover{border-color:var(--wine)}
+.sc-chips button[aria-pressed=true]{background:var(--wine);border-color:var(--wine);color:#fff}
+
+/* ── Honest-copy details must be readable ──────────────────────────────── */
+.f-site.f-refined .f-zero small{font-size:.875rem;line-height:1.7;color:#ead4b6}
+
+/* ── Mobile: hero legibility over bright film frames, tighter glance list ─ */
+@media(max-width:760px){
+  .f-site.f-refined .f-hero:after{background:linear-gradient(180deg,#260810e6 0%,#260810a8 42%,#26081055 72%,#26081030 100%),linear-gradient(0deg,#1f070bd0 0%,transparent 34%)}
+  .sc-glance-card{gap:6px}
+  .sc-glance-card>span{display:none}
+  .sc-glance-card b{margin-top:4px}
+}
