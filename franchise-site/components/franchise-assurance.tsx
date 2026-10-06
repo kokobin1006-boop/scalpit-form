@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { TERMS_VERIFIED, talentSteps } from "@/lib/franchise-terms";
 
 export function RepeatVisitPlan() {
   return <div className="sc-return-plan">
@@ -48,4 +49,12 @@ export function CapitalChecklist() {
     ["02", "점포를 확보하는 돈", "보증금·권리금과 공간에 따른 추가 공사, 부가세 등 별도 지출을 확인합니다."],
     ["03", "오픈 후 운영하는 돈", "초기 인건비·월세·광고비와 대출 상환, 생활비까지 고려해 여유 자금을 남깁니다."],
   ].map(([n, title, description]) => <div key={n}><span>{n}</span><h4>{title}</h4><p>{description}</p></div>)}</div><p className="sc-decision-note">모델 금액은 최종 총투자금 견적이 아닙니다. 포함·별도 항목과 정기 부담금을 확인한 뒤 출점을 검토합니다.</p></details>;
+}
+
+export function TalentPipeline() {
+  return <div className="sc-talent">
+    <div className="sc-decision-heading"><span className="sc-decision-label">사람이 곧 매출입니다 {!TERMS_VERIFIED && <em className="sc-draft-tag">시안</em>}</span><h3>테라피스트가 그만둬도<br/>매장이 흔들리지 않게.</h3><p>채용부터 교육, 실기 점검, 역할 확대, 정기 보수교육, 결원 대비까지.<br/>한 사람의 감이 아니라 기록과 기준으로 이어지게 설계합니다.</p></div>
+    <ol className="sc-talent-steps">{talentSteps.map(step => <li key={step.n}><b>{step.n}</b><div><strong>{step.t}</strong><p>{step.d}</p></div></li>)}</ol>
+    <p className="sc-decision-note">자격증이 아니라 본사 자체 점검표 기준입니다. 이직과 결원을 완전히 막을 수는 없어, 즉시 대체 인력을 보장하지 않습니다. 예비 인건비와 채용 기간을 함께 검토합니다.</p>
+  </div>;
 }
