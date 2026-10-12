@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Scálpit 채용 관리</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --burg: #7B1A2B; --burg-dark: #5A1020; --cream: #FAF4EE; --cream-mid: #F0E6DC;
+      --gold: #C4A47C; --white: #FFFFFF; --dark: #1C0E0E; --text: #2D1818;
+      --text-muted: #8B7070; --border: #E2D0C4; --bg-burg: #F5ECEC;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans KR', 'Montserrat', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+    button { font: inherit; cursor: pointer; }
+    [hidden] { display: none !important; }
+
+    .login-wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #3A1018; padding: 24px; }
+    .login-title { font: italic 600 34px 'Cormorant Garamond', serif; color: #fff; margin-bottom: 6px; }
+    .login-sub { font: 500 9px 'Montserrat', sans-serif; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 36px; }
+    .login-box { width: 100%; max-width: 320px; padding: 28px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); }
+    .login-input { width: 100%; padding: 13px 16px; margin-bottom: 12px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15); color: #fff; font-size: 16px; outline: none; }
+    .login-btn { width: 100%; padding: 14px; background: var(--burg); color: #fff; border: 0; font: 700 11px 'Montserrat', sans-serif; letter-spacing: 3px; }
+    .login-btn:hover { background: var(--burg-dark); }
+    .login-err { display: none; margin-top: 12px; font-size: 13px; color: #FF9B9B; text-align: center; }
+    .login-err.show { display: block; }
+
+    .topbar { background: var(--burg); color: #fff; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; }
+    .topbar h1 { font: 700 15px 'Noto Sans KR'; }
+    .topbar small { font: 500 10px 'Montserrat'; letter-spacing: 2px; opacity: .7; margin-left: 10px; }
+    .topbar button { background: transparent; border: 1px solid rgba(255,255,255,.3); color: #fff; padding: 7px 14px; font-size: 12px; }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 20px 80px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+    .stat { background: #fff; border: 1px solid var(--border); padding: 16px 18px; }
+    .stat b { display: block; font: 600 28px 'Cormorant Garamond', serif; color: var(--burg); }
+    .stat span { font-size: 12px; color: var(--text-muted); }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .bar input, .bar select { padding: 10px 12px; border: 1px solid var(--border); background: #fff; font: inherit; font-size: 14px; color: var(--text); }
+    .bar input { flex: 1; min-width: 180px; }
+    .bar .csv { margin-left: auto; padding: 10px 16px; background: var(--dark); color: #fff; border: 0; font-size: 13px; font-weight: 700; }
+    .table-wrap { background: #fff; border: 1px solid var(--border); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th { text-align: left; padding: 12px 14px; background: var(--cream-mid); font: 700 11px 'Noto Sans KR'; letter-spacing: .04em; color: var(--text-muted); white-space: nowrap; }
+    td { padding: 12px 14px; border-top: 1px solid var(--border); vertical-align: top; }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover { background: var(--bg-burg); }
+    .tag { display: inline-block; margin: 0 4px 4px 0; padding: 3px 9px; font-size: 12px; background: var(--cream-mid); border-radius: 999px; white-space: nowrap; }
+    .st { padding: 6px 8px; border: 1px solid var(--border); background: #fff; font: inherit; font-size: 12.5px; font-weight: 700; }
+    .st[data-v="신규"] { color: var(--burg); border-color: var(--burg); }
+    .st[data-v="합격"] { color: #1B7F3B; border-color: #1B7F3B; }
+    .st[data-v="불합격"], .st[data-v="보류"] { color: var(--text-muted); }
+    .empty { padding: 60px 20px; text-align: center; color: var(--text-muted); }
+
+    .drawer { position: fixed; inset: 0; background: rgba(28,14,14,.5); display: none; justify-content: flex-end; z-index: 50; }
+    .drawer.open { display: flex; }
+    .panel { background: #fff; width: min(480px, 100%); height: 100%; overflow: auto; padding: 24px; }
+    .panel h2 { font-size: 20px; margin-bottom: 4px; }
+    .panel .sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .row { display: grid; grid-template-columns: 96px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); font-size: 14px; }
+    .row dt { color: var(--text-muted); font-size: 12.5px; }
+    .row dd { word-break: break-word; white-space: pre-wrap; }
+    .panel label { display: block; margin: 18px 0 6px; font-size: 12.5px; font-weight: 700; }
+    .panel textarea { width: 100%; min-height: 96px; padding: 10px 12px; border: 1px solid var(--border); font: inherit; font-size: 14px; }
+    .panel .actions { display: flex; gap: 8px; margin-top: 16px; }
+    .panel .actions button { flex: 1; padding: 12px; border: 1px solid var(--border); background: #fff; font-weight: 700; font-size: 13px; }
+    .panel .actions .primary { background: var(--burg); border-color: var(--burg); color: #fff; }
+    .panel .actions .danger { color: #B3261E; }
+    @media (max-width: 720px) { .stats { grid-template-columns: 1fr 1fr; } .wrap { padding-inline: 12px; } }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap" id="login">
+  <div class="login-title">Scálpit Careers</div>
+  <div class="login-sub">Recruit Admin</div>
+  <form class="login-box" id="loginForm">
+    <input class="login-input" id="pw" type="password" placeholder="관리자 비밀번호" autocomplete="current-password" />
+    <button class="login-btn" type="submit">LOGIN</button>
+    <div class="login-err" id="loginErr">비밀번호가 올바르지 않습니다.</div>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <div class="topbar"><h1>채용 지원서 관리<small id="total"></small></h1><button id="logout" type="button">로그아웃</button></div>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b id="stAll">0</b><span>전체 지원</span></div>
+      <div class="stat"><b id="stNew">0</b><span>신규 (미확인)</span></div>
+      <div class="stat"><b id="stToday">0</b><span>오늘 접수</span></div>
+      <div class="stat"><b id="stIv">0</b><span>면접 예정</span></div>
+    </div>
+    <div class="bar">
+      <input id="q" type="search" placeholder="이름 · 연락처 검색" />
+      <select id="fStatus"><option value="">상태 전체</option></select>
+      <select id="fType"><option value="">근무 방식 전체</option><option>주 5일</option><option>금토일</option><option>토일</option></select>
+      <select id="fBranch"><option value="">지점 전체</option><option>동탄</option><option>천안</option><option>광교</option><option>압구정로데오</option><option value="청주">청주(오픈 예정)</option></select>
+      <select id="fSrc"><option value="">경로 전체</option></select>
+      <button class="csv" id="csv" type="button">CSV 내보내기</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>접수</th><th>이름</th><th>연락처</th><th>근무 방식</th><th>지점</th><th>직무</th><th>경력</th><th>입사</th><th>경로</th><th>상태</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="empty" hidden>조건에 맞는 지원서가 없습니다.</div>
+    </div>
+  </div>
+</div>
+
+<div class="drawer" id="drawer"><div class="panel" id="panel"></div></div>
+
+<script>
+const STATUSES = ['신규', '연락완료', '면접예정', '합격', '불합격', '보류'];
+let pw = '', all = [];
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const list = (a) => (Array.isArray(a) ? a : []);
+const fmtDate = (iso) => iso ? new Date(iso).toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-';
+const rawPhone = (p) => { const d = String(p || '').replace(/\D/g, ''); return d.length === 11 ? `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}` : String(p ?? ''); };
+const fmtPhone = (p) => esc(rawPhone(p));
+const api = (path, opt = {}) => fetch(path, { ...opt, headers: { 'Content-Type': 'application/json', 'x-admin-password': pw, ...(opt.headers || {}) } });
+
+$('#fStatus').innerHTML += STATUSES.map(s => `<option>${s}</option>`).join('');
+
+$('#loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const attempt = $('#pw').value;
+  const res = await fetch('/api/applications', { headers: { 'x-admin-password': attempt } });
+  if (res.status === 401) { $('#loginErr').classList.add('show'); return; }
+  pw = attempt; all = (await res.json()).data || [];
+  $('#login').hidden = true; $('#app').hidden = false;
+  const srcs = [...new Set(all.map(a => a.source).filter(Boolean))];
+  $('#fSrc').innerHTML = '<option value="">경로 전체</option>' + srcs.map(s => `<option>${esc(s)}</option>`).join('');
+  render();
+});
+$('#logout').addEventListener('click', () => { pw = ''; all = []; $('#app').hidden = true; $('#login').hidden = false; $('#pw').value = ''; $('#loginErr').classList.remove('show'); });
+
+function filtered() {
+  const q = $('#q').value.trim().toLowerCase(), qd = q.replace(/\D/g, '');
+  const st = $('#fStatus').value, ty = $('#fType').value, br = $('#fBranch').value, sr = $('#fSrc').value;
+  return all.filter(a => {
+    if (q && !((a.name || '').toLowerCase().includes(q) || (qd && (a.phone || '').includes(qd)))) return false;
+    if (st && a.status !== st) return false;
+    if (ty && !list(a.workTypes).includes(ty)) return false;
+    if (br && !list(a.branches).some(b => b.startsWith(br))) return false;
+    if (sr && a.source !== sr) return false;
+    return true;
+  }).slice().reverse();
+}
+
+function render() {
+  const today = new Date().toLocaleDateString('sv');
+  $('#stAll').textContent = all.length;
+  $('#stNew').textContent = all.filter(a => a.status === '신규').length;
+  $('#stToday').textContent = all.filter(a => (a.submittedAt || '').startsWith(today) || new Date(a.submittedAt).toLocaleDateString('sv') === today).length;
+  $('#stIv').textContent = all.filter(a => a.status === '면접예정').length;
+  $('#total').textContent = `TOTAL ${all.length}`;
+  const rows = filtered();
+  $('#empty').hidden = rows.length > 0;
+  $('#rows').innerHTML = rows.map(a => `
+    <tr data-id="${esc(a.id)}">
+      <td>${esc(fmtDate(a.submittedAt))}</td>
+      <td><b>${esc(a.name)}</b></td>
+      <td>${fmtPhone(a.phone)}</td>
+      <td>${list(a.workTypes).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</td>
+      <td>${list(a.branches).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</td>
+      <td>${esc(a.role)}</td>
+      <td>${esc(a.experience)}</td>
+      <td>${esc(a.startDate)}</td>
+      <td>${esc(a.source || a.utm?.source || '-')}</td>
+      <td><select class="st" data-id="${esc(a.id)}" data-v="${esc(a.status)}" aria-label="${esc(a.name)} 상태">${STATUSES.map(s => `<option${s === a.status ? ' selected' : ''}>${s}</option>`).join('')}</select></td>
+    </tr>`).join('');
+}
+['#q', '#fStatus', '#fType', '#fBranch', '#fSrc'].forEach(s => $(s).addEventListener('input', render));
+
+async function setStatus(id, status) {
+  const res = await api(`/api/applications/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+  if (!res.ok) { alert('상태 변경에 실패했어요.'); return false; }
+  const a = all.find(x => String(x.id) === String(id)); if (a) a.status = status; return true;
+}
+$('#rows').addEventListener('click', (e) => {
+  const sel = e.target.closest('select.st'); if (sel) return;
+  const tr = e.target.closest('tr[data-id]'); if (tr) openDetail(tr.dataset.id);
+});
+$('#rows').addEventListener('change', async (e) => {
+  const sel = e.target.closest('select.st'); if (!sel) return;
+  if (await setStatus(sel.dataset.id, sel.value)) { sel.dataset.v = sel.value; render(); } else render();
+});
+
+function openDetail(id) {
+  const a = all.find(x => String(x.id) === String(id)); if (!a) return;
+  const r = (k, v) => `<div class="row"><dt>${k}</dt><dd>${v || '-'}</dd></div>`;
+  $('#panel').innerHTML = `
+    <h2>${esc(a.name)}</h2>
+    <div class="sub">${esc(fmtDate(a.submittedAt))} 접수 · <a href="tel:${esc(a.phone)}">${fmtPhone(a.phone)}</a></div>
+    <dl>
+      ${r('근무 방식', list(a.workTypes).map(esc).join(' · '))}
+      ${r('희망 지점', list(a.branches).map(esc).join(' · '))}
+      ${r('희망 직무', esc(a.role))}
+      ${r('경력', esc(a.experience))}
+      ${r('경험 분야', list(a.fields).map(esc).join(' · '))}
+      ${r('자격증', esc(a.license))}
+      ${r('입사 가능', esc(a.startDate))}
+      ${r('지원 동기', esc(a.motivation))}
+      ${r('알게 된 경로', esc(a.source))}
+      ${r('유입 정보', esc([a.utm?.source, a.utm?.medium, a.utm?.campaign, a.utm?.referrer].filter(Boolean).join(' / ')))}
+      ${r('인재풀 동의', a.talentPool ? '✓ 동의 (1년 보관)' : '✗ 미동의 (채용 종료 후 파기)')}
+    </dl>
+    <label for="dStatus">상태</label>
+    <select class="st" id="dStatus" data-v="${esc(a.status)}">${STATUSES.map(s => `<option${s === a.status ? ' selected' : ''}>${s}</option>`).join('')}</select>
+    <label for="dMemo">메모 (면접 일정 · 평가 등)</label>
+    <textarea id="dMemo" maxlength="1000">${esc(a.memo)}</textarea>
+    <div class="actions">
+      <button type="button" class="primary" id="dSave">저장</button>
+      <button type="button" id="dClose">닫기</button>
+      <button type="button" class="danger" id="dDel">삭제</button>
+    </div>`;
+  $('#drawer').classList.add('open');
+  $('#dClose').onclick = closeDetail;
+  $('#dSave').onclick = async () => {
+    const res = await api(`/api/applications/${a.id}`, { method: 'PATCH', body: JSON.stringify({ status: $('#dStatus').value, memo: $('#dMemo').value }) });
+    if (!res.ok) { alert('저장에 실패했어요.'); return; }
+    a.status = $('#dStatus').value; a.memo = $('#dMemo').value; closeDetail(); render();
+  };
+  $('#dDel').onclick = async () => {
+    if (!confirm(`${a.name} 지원서를 삭제할까요? (되돌릴 수 없습니다)`)) return;
+    const res = await api(`/api/applications/${a.id}`, { method: 'DELETE' });
+    if (res.ok) { all = all.filter(x => x !== a); closeDetail(); render(); }
+  };
+}
+function closeDetail() { $('#drawer').classList.remove('open'); }
+$('#drawer').addEventListener('click', (e) => { if (e.target.id === 'drawer') closeDetail(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDetail(); });
+
+$('#csv').addEventListener('click', () => {
+  const head = ['접수일시', '이름', '연락처', '근무방식', '희망지점', '희망직무', '경력', '경험분야', '자격증', '입사가능', '지원동기', '알게된경로', '인재풀동의', '상태', '메모'];
+  const cell = (v) => {   // 지원자가 입력한 값이 엑셀 수식으로 실행되지 않도록 = + - @ 로 시작하면 앞에 ' 를 붙임
+      let t = String(v ?? ''); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t;
+      return `"${t.replace(/"/g, '""')}"`;
+    };
+  const lines = filtered().reverse().map(a => [
+    a.submittedAt ? new Date(a.submittedAt).toLocaleString('ko-KR') : '', a.name, rawPhone(a.phone),
+    list(a.workTypes).join('/'), list(a.branches).join('/'), a.role, a.experience, list(a.fields).join('/'), a.license, a.startDate,
+    a.motivation, a.source, a.talentPool ? 'Y' : 'N', a.status, a.memo].map(cell).join(','));
+  const blob = new Blob(['﻿' + [head.map(cell).join(','), ...lines].join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  Object.assign(document.createElement('a'), { href: url, download: `scalpit-applications-${new Date().toLocaleDateString('sv')}.csv` }).click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
